@@ -12,7 +12,6 @@ function createWindow () {
     frame: false,
     transparent: true,
     resizable: false,
-    focusable: false,
     alwaysOnTop: true,
     hasShadow: false,
     skipTaskbar: true,
@@ -23,10 +22,7 @@ function createWindow () {
   });
 
   win.setMenuBarVisibility(false);
-  win.loadFile(path.join(__dirname, 'index.html'));
-
-  win.setAlwaysOnTop(true, 'screen-saver');
-  win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+  win.loadFile('index.html');
 }
 
 app.whenReady().then(() => {
@@ -40,3 +36,4 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
+
