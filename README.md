@@ -22,9 +22,41 @@ npm start -- --no-sandbox
 ```
 ## 🛠️ Building from source
 
-```bash
-git clone https://github.com/corpest/spotify-overlay.git
-cd spotify-overlay
-npm install
-npm start
-```
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/corpest/spotify-overlay.git
+    cd spotify-overlay
+    ```
+
+2. Install the dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3. To run the app:
+
+    ```bash
+    npm start
+    ```
+
+---
+
+## 📦 Packaging the App for Linux (Debian)
+
+If you want to build the `.deb` installer package, you can do so using `electron-builder`:
+
+1. Ensure that the necessary dependencies are installed:
+
+    ```bash
+    npm install
+    ```
+
+2. Build the `.deb` package:
+
+    ```bash
+    npm run dist -- --linux deb
+    ```
+
+This will generate the `.deb` installer file in the `dist/` directory, ready to be installed on your system.
