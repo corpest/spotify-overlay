@@ -6,7 +6,7 @@ A clean, transparent overlay widget for controlling Spotify playback — designe
 
 ## 📦 Download
 
-**🔗 [Download the latest .deb installer](https://github.com/Corpest/spotify-overlay/releases/latest)**
+**🔗 [Download the latest .deb installer](https://github.com/corpest/spotify-overlay/releases/latest)**
 
 _Use this if you don’t want to build from source._
 
@@ -15,7 +15,7 @@ _Use this if you don’t want to build from source._
 ## 🛠️ Building from source
 
 ```bash
-git clone https://github.com/Corpest/spotify-overlay.git
+git clone https://github.com/corpest/spotify-overlay.git
 cd spotify-overlay
 npm install
 npm start
