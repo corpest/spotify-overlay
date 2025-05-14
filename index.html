@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Spotify Overlay</title>
+  <link rel="stylesheet" href="css/all.min.css">
+  <style>
+    :root {
+      --spotify-green: #1db954;
+      --control-bg: rgba(255, 255, 255, 0.1);
+      --control-hover: rgba(255, 255, 255, 0.25);
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 110px;
+      width: 450px;
+      font-family: "Segoe UI", sans-serif;
+      color: white;
+      background: transparent;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .glass-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      padding: 12px;
+    }
+
+    #thumb {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      margin-right: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      min-width: 0;
+      margin-right: 5px;
+    }
+
+    .text-container {
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .artist {
+      font-size: 14px;
+      color: #ccc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bar-container {
+      margin: 6px 0;
+      position: relative;
+    }
+
+    .time-display {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #ccc;
+      margin-bottom: 2px;
+    }
+
+    .bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress {
+      height: 100%;
+      background: var(--spotify-green);
+      width: 0%;
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .progress-handle {
+      position: absolute;
+      right: -6px;
+      top: -4px;
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      transform: scale(0);
+      transition: transform 0.1s ease;
+      z-index: 2;
+    }
+
+    .bar:hover .progress-handle {
+      transform: scale(1);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .primary-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn {
+      background: var(--control-bg);
+      border: none;
+      color: white;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    #playPauseBtn {
+      width: 32px;
+      height: 32px;
+    }
+
+    .btn:hover {
+      background: var(--control-hover);
+      transform: scale(1.05);
+    }
+
+    .btn i {
+      font-size: 14px;
+    }
+
+    .vol-container {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100px; 
+    }
+
+    .vol-icon {
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+
+    .vol-slider-container {
+      position: relative;
+      flex: 1;
+      height: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .vol-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+      outline: none;
+      width: 100%;
+      transition: height 0.15s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .vol-slider:hover {
+      height: 6px;
+    }
+
+    .vol-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 12px;
+      width: 12px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .vol-slider:hover::-webkit-slider-thumb,
+    .vol-slider:active::-webkit-slider-thumb {
+      opacity: 1;
+    }
+
+    .vol-slider::-moz-range-thumb {
+      height: 12px;
+      width: 12px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .vol-slider:hover::-moz-range-thumb,
+    .vol-slider:active::-moz-range-thumb {
+      opacity: 1;
+    }
+
+    .vol-slider-fill {
+      position: absolute;
+      height: 4px;
+      background: var(--spotify-green);
+      border-radius: 2px;
+      pointer-events: none;
+      left: 0;
+      width: 50%;
+      z-index: 0;
+      transition: height 0.15s ease;
+    }
+
+    .vol-slider:hover ~ .vol-slider-fill {
+      height: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="glass-container">
+    <img id="thumb" src="" alt="Album Art" />
+    <div class="info">
+      <div class="text-container">
+        <div class="title" id="title">Loading...</div>
+        <div class="artist" id="artist">Spotify</div>
+      </div>
+      <div class="bar-container">
+        <div class="time-display">
+          <span id="currentTime">0:00</span>
+          <span id="totalTime">0:00</span>
+        </div>
+        <div class="bar" id="progressBar">
+          <div class="progress" id="progress">
+            <div class="progress-handle"></div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="primary-controls">
+          <button class="btn" onclick="control('previous')"><i class="fas fa-backward"></i></button>
+          <button class="btn" id="playPauseBtn" onclick="control('play-pause')"><i class="fas fa-play"></i></button>
+          <button class="btn" onclick="control('next')"><i class="fas fa-forward"></i></button>
+        </div>
+        <div class="vol-container">
+          <i class="fas fa-volume-up vol-icon"></i>
+          <div class="vol-slider-container">
+            <input type="range" min="0" max="1" step="0.01" class="vol-slider" id="volumeSlider" />
+            <div class="vol-slider-fill" id="volumeFill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { exec } = require('child_process');
+    let lastPosition = 0;
+    let lastUpdateTime = 0;
+    let isPlaying = false;
+    let currentDuration = 0;
+    let animationFrameId = null;
+    let shouldUpdateProgressManually = false;
+
+    function run(cmd) {
+      return new Promise((resolve) => {
+        exec(cmd, (err, stdout) => {
+          resolve(err ? null : stdout.trim());
+        });
+      });
+    }
+
+    function control(action) {
+      if (action === 'play-pause') {
+        run('playerctl play-pause').then(() => {X
+          isPlaying = !isPlaying;
+          const playPauseIcon = document.getElementById("playPauseBtn").querySelector("i");
+          playPauseIcon.className = isPlaying ? "fas fa-pause" : "fas fa-play";
+        });
+      }
+      else if (action === 'next') run('playerctl next');
+      else if (action === 'previous') run('playerctl previous');
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    let isDragging = false;
+    let lastSeekPercent = 0;
+
+    function startDrag(e) {
+      isDragging = true;
+      
+      shouldUpdateProgressManually = false;
+      
+      document.addEventListener("mousemove", handleDrag);
+      document.addEventListener("mouseup", endDrag);
+      
+      updateDragPosition(e);
+    }
+    
+    function handleDrag(e) {
+      if (isDragging) {
+        updateDragPosition(e);
+      }
+    }
+    
+    function updateDragPosition(e) {
+      const bar = document.getElementById("progressBar");
+      const rect = bar.getBoundingClientRect();
+      const percent = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+      lastSeekPercent = percent;
+      
+      document.getElementById("progress").style.width = (percent * 100) + "%";
+      
+      if (currentDuration) {
+        document.getElementById("currentTime").textContent = formatTime(currentDuration * percent);
+      }
+    }
+    
+    function endDrag(e) {
+      if (!isDragging) return;
+      
+      document.removeEventListener("mousemove", handleDrag);
+      document.removeEventListener("mouseup", endDrag);
+      
+
+      seekToPercent(lastSeekPercent);
+      
+      setTimeout(() => {
+        shouldUpdateProgressManually = true;
+        isDragging = false;
+      }, 100);
+    }
+
+    async function seekToPercent(percent) {
+      const duration = await run("playerctl metadata mpris:length");
+      if (duration) {
+        const seconds = (parseInt(duration) / 1000000) * percent;
+        run(`playerctl position ${seconds}`);
+        
+ 
+        lastPosition = seconds;
+        lastUpdateTime = performance.now();
+      }
+    }
+
+    function updateVolumeFill() {
+      const volumeSlider = document.getElementById("volumeSlider");
+      const volumeFill = document.getElementById("volumeFill");
+      const percent = parseFloat(volumeSlider.value) * 100;
+      volumeFill.style.width = `${percent}%`;
+    }
+
+    function animateProgress() {
+      if (isPlaying && shouldUpdateProgressManually && !isDragging && lastPosition !== null && currentDuration > 0) {
+        const currentTime = performance.now();
+        const elapsedSecs = (currentTime - lastUpdateTime) / 1000;
+        const newPosition = lastPosition + elapsedSecs;
+        
+        if (newPosition <= currentDuration) {
+          const percent = (newPosition / currentDuration) * 100;
+          document.getElementById("progress").style.width = `${percent}%`;
+          document.getElementById("currentTime").textContent = formatTime(newPosition);
+        }
+      }
+      
+      animationFrameId = requestAnimationFrame(animateProgress);
+    }
+
+    async function updateTrack() {
+      try {
+        const [title, artist, imgUrl, position, lengthMicros, status, volume] = await Promise.all([
+          run("playerctl metadata title"),
+          run("playerctl metadata artist"),
+          run("playerctl metadata mpris:artUrl"),
+          run("playerctl position"),
+          run("playerctl metadata mpris:length"),
+          run("playerctl status"),
+          run("playerctl volume")
+        ]);
+
+        if (!title || !artist) return;
+
+        document.getElementById("title").textContent = title;
+        document.getElementById("artist").textContent = artist;
+
+        const img = imgUrl?.replace("open.spotify.com", "i.scdn.co") || "";
+        if (document.getElementById("thumb").src !== img && img) {
+          document.getElementById("thumb").src = img;
+        }
+
+        if (lengthMicros) {
+          const duration = parseInt(lengthMicros) / 1000000;
+          currentDuration = duration;
+          document.getElementById("totalTime").textContent = formatTime(duration);
+        }
+
+        if (position && !isDragging) {
+          const currentPosition = parseFloat(position);
+          lastPosition = currentPosition;
+          lastUpdateTime = performance.now();
+          
+          document.getElementById("currentTime").textContent = formatTime(currentPosition);
+          
+          if (currentDuration > 0) {
+            const percent = Math.min(100, Math.max(0, (currentPosition / currentDuration) * 100));
+            document.getElementById("progress").style.width = `${percent}%`;
+          }
+          
+          shouldUpdateProgressManually = true;
+        }
+
+        const isNowPlaying = status === "Playing";
+        if (isPlaying !== isNowPlaying) {
+          const playPauseIcon = document.getElementById("playPauseBtn").querySelector("i");
+          playPauseIcon.className = isNowPlaying ? "fas fa-pause" : "fas fa-play";
+          isPlaying = isNowPlaying;
+          shouldUpdateProgressManually = isNowPlaying;
+        }
+
+        if (volume && !document.getElementById("volumeSlider").dragging) {
+          const volValue = parseFloat(volume);
+          document.getElementById("volumeSlider").value = volValue;
+          updateVolumeFill();
+        }
+      } catch (error) {
+        console.error("Update error:", error);
+      }
+    }
+
+    const progressBar = document.getElementById("progressBar");
+    progressBar.addEventListener("mousedown", startDrag);
+
+    const volumeSlider = document.getElementById("volumeSlider");
+    volumeSlider.addEventListener("mousedown", () => volumeSlider.dragging = true);
+    volumeSlider.addEventListener("mouseup", () => {
+      setTimeout(() => volumeSlider.dragging = false, 100);
+    });
+    volumeSlider.addEventListener("input", (e) => {
+      run(`playerctl volume ${e.target.value}`);
+      updateVolumeFill();
+    });
+
+    animateProgress();
+
+    const updateInterval = setInterval(updateTrack, 1000);
+
+    updateTrack();
+  </script>
+</body>
+</html>
