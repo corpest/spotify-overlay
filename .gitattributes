@@ -1,0 +1,6 @@
+dist/*.deb filter=lfs diff=lfs merge=lfs -text
+dist/*.AppImage filter=lfs diff=lfs merge=lfs -text
+dist/linux-unpacked/* filter=lfs diff=lfs merge=lfs -text
+dist/spotify-overlay_1.0.0_amd64.deb filter=lfs diff=lfs merge=lfs -text
+dist/linux-unpacked/spotify-overlay filter=lfs diff=lfs merge=lfs -text
+dist/Spotify[[:space:]]Overlay-1.0.0.AppImage filter=lfs diff=lfs merge=lfs -text

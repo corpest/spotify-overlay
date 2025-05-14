@@ -1,0 +1,30 @@
+{
+  "name": "spotify-overlay",
+  "version": "1.0.0",
+  "main": "main.js",
+  "description": "Spotify widget overlay for Parrot OS",
+  "homepage": "https://github.com/corpest/spotify-overlay",
+  "author": {
+    "name": "Corpest",
+    "email": "none@corpest.dev"
+  },
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.corpest.spotifyoverlay",
+    "productName": "Spotify Overlay",
+    "icon": "assets/spotify.png",
+    "linux": {
+      "maintainer": "Corpest <none@corpest.dev>",
+      "category": "Utility",
+      "target": ["AppImage", "deb"],
+      "icon": "assets/icon.png"
+    }
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.14.1"
+  }
+}
