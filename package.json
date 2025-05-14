@@ -19,12 +19,15 @@
     "linux": {
       "maintainer": "Corpest <none@corpest.dev>",
       "category": "Utility",
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "icon": "assets/icon.png"
     }
   },
   "devDependencies": {
-    "electron": "^29.0.0",
-    "electron-builder": "^24.14.1"
+    "electron": "^36.2.0",
+    "electron-builder": "^26.0.12"
   }
 }

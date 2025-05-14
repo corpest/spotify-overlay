@@ -1,3 +1,6 @@
+const { app, BrowserWindow, screen } = require('electron');
+const path = require('path');
+
 function createWindow () {
   const { width: screenWidth } = screen.getPrimaryDisplay().workAreaSize;
 
@@ -20,8 +23,20 @@ function createWindow () {
   });
 
   win.setMenuBarVisibility(false);
-  win.loadFile('index.html');
+  win.loadFile(path.join(__dirname, 'index.html'));
 
   win.setAlwaysOnTop(true, 'screen-saver');
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
 }
+
+app.whenReady().then(() => {
+  createWindow();
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
+});
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit();
+});
