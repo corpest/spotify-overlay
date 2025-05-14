@@ -1,3 +1,5 @@
+# ATTENTION: I WILL PROBABLY NOT UPDATE OR FIX THIS FOR OTHER DISTROS UNLESS IT'S IN MY INTERESTS
+
 # Spotify Overlay for Linux 🎵
 
 A clean, transparent overlay widget for controlling Spotify playback — designed for Parrot OS and other Linux distros.
