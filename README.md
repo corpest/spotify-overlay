@@ -19,6 +19,7 @@ if building from source you might get gtk errors. try to
 ./Spotify\ Overlay-1.0.0.AppImage --no-sandbox
 OR
 npm start -- --no-sandbox
+also remember to install playerctl
 ```
 ## 🛠️ Building from source
 
