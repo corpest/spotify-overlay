@@ -14,7 +14,7 @@ _Use this if you don’t want to build from source._
 
 ---
 ## ⚠️ Important Note
-also remember to install playerctl
+remember to install playerctl
 ```
 ## 🛠️ Building from source
 
